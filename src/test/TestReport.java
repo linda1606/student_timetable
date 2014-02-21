@@ -1,9 +1,12 @@
 package test;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 import model.Course;
 import model.Offering;
 import model.Schedule;
-import student_timetable.Report;
+import report.Report;
 import dao.CourseDao;
 import dao.OfferingDao;
 import dao.ScheduleDao;
@@ -20,6 +23,7 @@ public class TestReport extends TestCase {
 		super(name); 
 	}
 	
+	@Test
 	public void testEmptyReport() throws Exception {
 		scheduleDao.deleteAll();
 		Report report = new Report();
@@ -27,7 +31,7 @@ public class TestReport extends TestCase {
 		report.write(buffer);
 		assertEquals("Number of scheduled offerings: 0\n", buffer.toString());
 	}
-	
+	@Test
 	public void testReport() throws Exception {
 		scheduleDao.deleteAll();
 		Course cs101 = courseDao.create("CS101", 3);

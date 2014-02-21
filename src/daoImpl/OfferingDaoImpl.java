@@ -3,8 +3,7 @@ package daoImpl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import util.DB;
+import util.ConnectionFactory;
 import model.Course;
 import model.Offering;
 import dao.CourseDao;
@@ -12,15 +11,16 @@ import dao.OfferingDao;
 
 public class OfferingDaoImpl implements OfferingDao {
 	private Course course;
-	private CourseDao courseDao = new CourseDaoImpl(); 
+	private CourseDao courseDao = new CourseDaoImpl();
+	Connection conn = null;
+	Statement statement = null;
+	ResultSet result = null;
 
 	@Override
 	public Offering create(Course course, String daysTimesCsv) throws Exception {
-		Connection conn = null;
-		Statement statement = null;
-		ResultSet result = null;
+		
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			result = statement.executeQuery("SELECT MAX(ID) FROM offering;");
 			result.next();
@@ -29,17 +29,14 @@ public class OfferingDaoImpl implements OfferingDao {
 			return new Offering(newId, course, daysTimesCsv);
 		} 
 		finally {
-			DB.getInstance().free(result, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 	}
 
 	@Override
 	public Offering find(int id) throws Exception {
-		Connection conn = null;
-		Statement statement = null;
-		ResultSet result = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			 result = statement.executeQuery("SELECT * FROM offering WHERE ID =" + id + ";");
 			if (result.next() == false)
@@ -51,23 +48,21 @@ public class OfferingDaoImpl implements OfferingDao {
 			return new Offering(id, course, dateTime);
 		} 
 		catch (Exception ex) {
-			DB.getInstance().free(result, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 			return null;
 		}
 	}
 
 	@Override
 	public void update(Offering offering) throws Exception {
-		Connection conn = null;
-		Statement statement = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			statement.executeUpdate("DELETE FROM Offering WHERE ID=" + offering.getId() + ";");
 			statement.executeUpdate("INSERT INTO Offering VALUES('" + offering.getId() + "','" + course.getName() + "','" + offering.getDaysTimes() + "');");
 		} 
 		finally {
-			DB.getInstance().free(null, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 
 	}

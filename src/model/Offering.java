@@ -1,9 +1,4 @@
 package model;
-import java.sql.*;
-
-import dao.CourseDao;
-import daoImpl.CourseDaoImpl;
-import util.DB;
 
 public class Offering {
 	private int id;

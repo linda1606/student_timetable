@@ -1,6 +1,9 @@
 package test;
 import java.util.Collection;
 import java.util.List;
+
+import org.junit.Test;
+
 import junit.framework.TestCase;
 import model.Course;
 import model.Offering;
@@ -21,14 +24,14 @@ public class TestSchedule extends TestCase {
 	public TestSchedule(String name) {
 		super(name);
 	}
-
+	@Test
 	public void testMinCredits() {
 		Schedule schedule = new Schedule("name");
 		Collection<String> analysis = schedule.analysis();
 		assertEquals(1, analysis.size());
 		assertTrue(analysis.contains("Too few credits"));
 	}
-	
+	@Test
 	public void testJustEnoughCredits() {
 		Course cs110 = new Course("CS110", 11);
 		Offering mwf10 = new Offering(1, cs110, "M10,W10,F10");
@@ -44,7 +47,7 @@ public class TestSchedule extends TestCase {
 		analysis = schedule.analysis();
 		assertEquals(0, analysis.size());
 	}
-
+	@Test
 	public void testMaxCredits() {
 		Course cs110 = new Course("CS110", 20);
 		Offering mwf10 = new Offering(1, cs110, "M10,W10,F10");
@@ -57,7 +60,7 @@ public class TestSchedule extends TestCase {
 		analysis = schedule.analysis();
 		assertEquals(0, analysis.size());
 	}
-
+	@Test
 	public void testJustBelowMax() {
 		Course cs110 = new Course("CS110", 19);
 		Offering mwf10 = new Offering(1, cs110, "M10,W10,F10");
@@ -73,7 +76,7 @@ public class TestSchedule extends TestCase {
 		analysis = schedule.analysis();
 		assertEquals(0, analysis.size());
 	}
-
+	@Test
 	public void testDupCourses() {
 		Course cs110 = new Course("CS110", 6);
 		Offering mwf10 = new Offering(1, cs110, "M10,W10,F10");
@@ -85,7 +88,7 @@ public class TestSchedule extends TestCase {
 		assertEquals(1, analysis.size());
 		assertTrue(analysis.contains("Same course twice - CS110"));
 	}
-	
+	@Test
 	public void testOverlap() {
 		Schedule schedule = new Schedule("name");
 		Course cs110 = new Course("CS110", 6);
@@ -106,7 +109,7 @@ public class TestSchedule extends TestCase {
 		assertTrue(analysis.contains("Course overlap - W10"));
 		assertTrue(analysis.contains("Course overlap - F11"));
 	}
-
+	@Test
 	public void testCourseCreate() throws Exception {
 		Course c = courseDao.create("CS202", 1);
 		Course c2 = courseDao.find("CS202");
@@ -114,22 +117,23 @@ public class TestSchedule extends TestCase {
 		Course c3 = courseDao.find("Nonexistent");
 		assertNull(c3);
 	}
-
+	@Test
 	public void testOfferingCreate() throws Exception {
 		Course c = courseDao.create("CS202", 2);
 		Offering offering = offeringDao.create(c, "M10");
 		assertNotNull(offering);
 	}
-
+	@Test
 	public void testPersistentSchedule() throws Exception {
 		Schedule s = scheduleDao.create("Bob");
 		assertNotNull(s);
 	}
-	
+	@Test
 	public void testScheduleUpdate() throws Exception {
 		Course cs101 = courseDao.create("CS101", 3);
 		courseDao.update(cs101);
 		Offering off1 = offeringDao.create(cs101, "M10");
+		
 		offeringDao.update(off1);
 		Offering off2 = offeringDao.create(cs101, "T9");
 		offeringDao.update(off1);

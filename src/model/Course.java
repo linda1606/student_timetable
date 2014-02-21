@@ -1,7 +1,5 @@
 package model;
-import java.sql.*;
 
-import util.DB;
 
 public class Course {
 	private String name;

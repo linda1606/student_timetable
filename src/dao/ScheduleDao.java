@@ -1,8 +1,6 @@
 package dao;
 
 import java.util.Collection;
-
-import model.Offering;
 import model.Schedule;
 
 public interface ScheduleDao {

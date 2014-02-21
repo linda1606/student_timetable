@@ -6,14 +6,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import util.ConnectionFactory;
 import model.Offering;
 import model.Schedule;
-import util.DB;
 import dao.OfferingDao;
 import dao.ScheduleDao;
 
 public class ScheduleDaoImpl implements ScheduleDao{
-
 	ArrayList<Offering> schedules = new ArrayList<Offering>();
 	private OfferingDao offeringDao = new OfferingDaoImpl();
 	
@@ -22,14 +21,13 @@ public class ScheduleDaoImpl implements ScheduleDao{
 		Connection conn = null;
 		Statement statement = null; 
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			statement.executeUpdate("DELETE  FROM schedule");
 		} 
 		finally {
-			DB.getInstance().free(null, statement, conn);
-		}
-		
+			ConnectionFactory.getInstance().close(null, statement, conn);
+		}	
 	}
 
 	@Override
@@ -37,13 +35,13 @@ public class ScheduleDaoImpl implements ScheduleDao{
 		Connection conn = null;
 		Statement statement = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			statement.executeUpdate("DELETE FROM schedule WHERE name = '" + name + "';");
 			return new Schedule(name);
 		} 
 		finally {
-			DB.getInstance().free(null, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 	}
 
@@ -53,7 +51,7 @@ public class ScheduleDaoImpl implements ScheduleDao{
 		Statement statement = null;
 		ResultSet result = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			 statement = conn.createStatement();
 			 result = statement.executeQuery("SELECT * FROM schedule WHERE Name= '" + name + "';");
 			Schedule schedule = new Schedule(name);
@@ -68,7 +66,7 @@ public class ScheduleDaoImpl implements ScheduleDao{
 			return null;
 		} 
 		finally {
-			DB.getInstance().free(result, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 	}
 
@@ -79,14 +77,14 @@ public class ScheduleDaoImpl implements ScheduleDao{
 		Statement statement = null;
 		ResultSet results = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			results = statement.executeQuery("SELECT DISTINCT Name FROM schedule;");
 			while (results.next())
 			result.add(find(results.getString("Name")));
 		} 
 		finally {
-			DB.getInstance().free(results, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 		return result;
 	}
@@ -96,7 +94,7 @@ public class ScheduleDaoImpl implements ScheduleDao{
 		Connection conn = null;
 		Statement statement = null;
 		try {
-			conn = DB.getInstance().getConnection();
+			conn = ConnectionFactory.getInstance().getConnection();
 			statement = conn.createStatement();
 			statement.executeUpdate("DELETE FROM schedule WHERE name = '" + schedule.getName() + "';");
 			for (int i = 0; i < schedules.size(); i++) {
@@ -105,12 +103,9 @@ public class ScheduleDaoImpl implements ScheduleDao{
 			}
 		} 
 		finally {
-			DB.getInstance().free(null, statement, conn);
+			ConnectionFactory.getInstance().close(null, statement, conn);
 		}
 		
 	}
-
-
-	
 
 }
